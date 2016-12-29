@@ -6,8 +6,7 @@
 
 using namespace std;
 
-template <class arr_T>
-void Merge(arr_T& array, arr_T& result, int left, int mid, int right)
+void Merge(vector<int>& array, vector<int>& result, int left, int mid, int right)
 {
     int l = left;
     int r = mid;
@@ -32,8 +31,7 @@ void Merge(arr_T& array, arr_T& result, int left, int mid, int right)
     }
 }
 
-template <class arr_T>
-void MergeSort(arr_T& array, arr_T& result, int left, int right)
+void MergeSort(vector<int>& array, vector<int>& result, int left, int right)
 {
     if(left < right){
         int mid = (left+right)/2;
