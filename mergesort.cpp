@@ -58,8 +58,10 @@ int main()
     result.resize(unsort.size());
 
     MergeSort(unsort, result,0,unsort.size()-1);
+    /*
     for(uint32_t i = 0; i < result.size(); i++) {
         cout<<result[i]<<" ";
     }
+    */
     return 0;
 }
