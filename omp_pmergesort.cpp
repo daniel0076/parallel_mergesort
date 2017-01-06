@@ -12,6 +12,7 @@ void mergesort_serial(vector<int>& array, vector<int>& result, int left, int rig
 void merge(vector<int>& array, vector<int>& result, int left, int mid, int right);
 void p_merge(vector<int>& array, vector<int>& result,
         int l1, int r1, int l2, int r2, int l3, int);
+void iterative_merge(vector<int>& array, vector<int>& result, int l1, int r1, int l2, int r2, int l3);
 int binary_search(int key, vector<int>& array, int left, int right);
 
 int main(int argc, char* argv[])
@@ -25,7 +26,7 @@ int main(int argc, char* argv[])
     }
 
     fstream fin;
-    fin.open("/tmp/sort.txt",ios::in);
+    fin.open("sort.txt",ios::in);
     string line;
     vector<int> unsort;
     while(getline(fin,line)){
@@ -37,14 +38,13 @@ int main(int argc, char* argv[])
     }
     vector<int> result;
     result.resize(unsort.size());
-
     omp_set_nested(1);
     mergesort_omp(unsort, result,0,unsort.size()-1,thread_num);
-    /*
+/*    
     for(uint32_t i = 0; i < result.size(); i++) {
         cout<<result[i]<<" ";
     }
-    */
+*/    
     return 0;
 }
 
@@ -119,9 +119,9 @@ void p_merge(vector<int>& array, vector<int>& result,
             #pragma omp parallel sections
             {
             #pragma omp section
-                p_merge(array, result, l1, mid1-1, l2, mid2-1, l3, thread_num/2);
+                iterative_merge(array, result, l1, mid1-1, l2, mid2-1, l3);
             #pragma omp section
-                p_merge(array, result, mid1+1, r1, mid2, r2, result_pos+1, thread_num- thread_num/2);
+                iterative_merge(array, result, mid1+1, r1, mid2, r2, result_pos+1);
             }
             // write back for next time use
             int i;
@@ -154,6 +154,23 @@ void merge(vector<int>& array, vector<int>& result, int left, int mid, int right
     int i;
     for(i=left;i<=right;i++){
         array[i] = result[i];
+    }
+}
+
+void iterative_merge(vector<int>& array, vector<int>& result, int l1, int r1, int l2, int r2, int l3)
+{
+    while((l1 <= r1) && (l2 <= r2)){
+        if(array[l1]<=array[l2]){
+            result[l3++] = array[l1++];
+        }else{
+            result[l3++] = array[l2++];
+        }
+    }
+    while(l1 <= r1){
+        result[l3++] = array[l1++];
+    }
+    while(l2 <= r2){
+        result[l3++] = array[l2++];
     }
 }
 
