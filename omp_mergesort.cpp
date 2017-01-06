@@ -47,11 +47,9 @@ void mergesort_omp(vector<int>& array, vector<int>& result, int left, int right,
     if(left < right){
         int mid = (left+right)/2;
         if(threads == 1){
-            mergesort_serial(array,result,left,mid);
-            mergesort_serial(array,result,mid+1,right);
-            merge(array,result,left,mid+1,right);
+            mergesort_serial(array,result,left,right);
         }
-        else if(threads >1){
+        else if(threads >= 2){
 
             omp_set_num_threads(2);
             #pragma omp parallel sections
@@ -59,7 +57,7 @@ void mergesort_omp(vector<int>& array, vector<int>& result, int left, int right,
                 #pragma omp section
                 mergesort_omp(array,result,left,mid,threads/2);
                 #pragma omp section
-                mergesort_omp(array,result,mid+1,right,threads/2);
+                mergesort_omp(array,result,mid+1,right,threads- threads/2);
             }
 
             merge(array,result,left,mid+1,right);
@@ -78,7 +76,7 @@ int main(int argc, char* argv[])
     }
 
     fstream fin;
-    fin.open("sort.txt",ios::in);
+    fin.open("/tmp/sort.txt",ios::in);
     string line;
     vector<int> unsort;
     while(getline(fin,line)){
@@ -93,10 +91,8 @@ int main(int argc, char* argv[])
 
     omp_set_nested(1);
     mergesort_omp(unsort, result,0,unsort.size()-1,thread_num);
-    /*
     for(uint32_t i = 0; i < result.size(); i++) {
         cout<<result[i]<<" ";
     }
-    */
     return 0;
 }
