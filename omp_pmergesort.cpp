@@ -40,11 +40,11 @@ int main(int argc, char* argv[])
     result.resize(unsort.size());
     omp_set_nested(1);
     mergesort_omp(unsort, result,0,unsort.size()-1,thread_num);
-/*    
+/*
     for(uint32_t i = 0; i < result.size(); i++) {
         cout<<result[i]<<" ";
     }
-*/    
+*/
     return 0;
 }
 
@@ -110,24 +110,18 @@ void p_merge(vector<int>& array, vector<int>& result,
         int result_pos = l3+(mid1-l1)+(mid2-l2);
         result[result_pos] = array[mid1];
 
-        if(thread_num <= 1){
-                p_merge(array, result, l1, mid1-1, l2, mid2-1, l3, 1);
-                p_merge(array, result, mid1+1, r1, mid2, r2, result_pos+1, 1);
-        }else{
-
-            omp_set_num_threads(2);
-            #pragma omp parallel sections
-            {
-            #pragma omp section
-                iterative_merge(array, result, l1, mid1-1, l2, mid2-1, l3);
-            #pragma omp section
-                iterative_merge(array, result, mid1+1, r1, mid2, r2, result_pos+1);
-            }
-            // write back for next time use
-            int i;
-            for(i=l1;i<=r2;i++){
-                array[i] = result[i];
-            }
+        omp_set_num_threads(2);
+        #pragma omp parallel sections
+        {
+        #pragma omp section
+            iterative_merge(array, result, l1, mid1-1, l2, mid2-1, l3);
+        #pragma omp section
+            iterative_merge(array, result, mid1+1, r1, mid2, r2, result_pos+1);
+        }
+        // write back for next time use
+        int i;
+        for(i=l1;i<=r2;i++){
+            array[i] = result[i];
         }
     }
 }
