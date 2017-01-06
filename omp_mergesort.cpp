@@ -91,8 +91,10 @@ int main(int argc, char* argv[])
 
     omp_set_nested(1);
     mergesort_omp(unsort, result,0,unsort.size()-1,thread_num);
+    /*
     for(uint32_t i = 0; i < result.size(); i++) {
         cout<<result[i]<<" ";
     }
+    */
     return 0;
 }
